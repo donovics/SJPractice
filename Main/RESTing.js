@@ -23,13 +23,25 @@ app.get("/data", (req, res) => {
 app.post("/data", (req, res) => {
     try{
         // const { id, name, age, num } = req.body;
-        let result = db.prepare("INSERT INTO people (id, name, age, num) VALUES (?, ?, ?, ?)")
+        db.prepare("INSERT INTO people (id, name, age, num) VALUES (?, ?, ?, ?)")
             .run(req.body.id, req.body.name, req.body.age, req.body.num);
         res.status(201).json();
-        console.log("Person added.");
+        console.log("Person with id: " + req.body.id + " added.");
     }
     catch (err){
         res.status(400).json({ error: err.message });
+    }
+});
+
+app.delete("/data/:id", (req, res) => {
+    try {
+        let result = db.prepare("DELETE FROM people WHERE id = ?").run(req.params.id);
+        if (result.changes === 0) { return res.status(404).json({ error: "Nincs ilyen személy." }); }
+        res.status(200).json();
+        console.log("person with id: "+ req.params.id + " deleted.");
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message})
     }
 });
 
