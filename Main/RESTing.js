@@ -1,9 +1,16 @@
-const express = require("express");
+import express from "express";
+import database from "better-sqlite3";
+import cors from "cors";
+
 const app = express();
-const database = require("better-sqlite3");
 const db = new database("shelf.db")
 
 app.use(express.json());
+app.use(cors({
+origin: 'http://localhost:5173',
+methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+allowedHeaders: ['Content-Type', 'Authorization']
+}))
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS people (
